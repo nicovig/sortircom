@@ -1,0 +1,101 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ parent() }} | Accueil{% endblock %}
+{% block body %}
+    <h1>Bienvenue sur notre site Sortir.com</h1>
+
+    <!--formulaire Search-->
+    <div id="posFormSearch d-flex col-10">
+        <h3 style="text-align:left;">Filtrer les sorties</h3>
+
+        {{ form_start(formSearch) }}
+        {{ form_row(formSearch.search) }}
+            {#<button type="submit" class="btn btn-success">Effectuer la recherche</button>#}
+        {{ form_end(formSearch) }}
+        <input type="button" class="btn btn-warning posRetour" onclick="refresh()" value="Retour">
+
+    </div>
+    <img class="posImgSortirCom" src="img/chevaux.jpg" alt="image sports nautiques">
+    <img class="posImgSortirCom1" src="img/dauphin.jpg" alt="image sports nautiques">
+    <img class="posImgSortirCom2" src="img/chatons.jpg" alt="image sports nautiques">
+    {% if alert is defined %}
+        <div class="row">
+            <p class="mx-auto warningMessage"> {{ alert }}</p>
+        </div>
+    {% endif %}
+    {% for label, messages in app.flashes %}
+        {% for message in messages %}
+            <div class="alert-{{ label }}">
+                <br>{{ message }}<br>
+            </div>
+        {% endfor %}
+    {% endfor %}
+
+    {% if list %}
+        <div>
+        <table>
+            <tr>
+                <th>Nom de la sortie</th>
+                <th>Date de la sortie</th>
+                <th>Clôture</th>
+                <th>Durée</th>
+                <th>Nombre de places</th>
+                <th>Infos</th>
+                <th>état</th>
+                <th>Actions</th>
+            </tr>
+                {% for champs in list %}
+                    {% if champs.isNotArchived %}
+                <tr>
+                        <td>{{ champs.name }}</td>
+                        <td>{{ champs.dateHourBeginning | date('d/m/Y H:i') }}</td>
+                        <td>{{ champs.deadlineRegistration | date('d/m/Y') }}</td>
+                        <td>{{ champs.duration }}</td>
+                        <td>{{ champs.participants|length }} / {{ champs.nbRegistrationsMax }}</td>
+                        <td>{{ champs.outingInfos }}</td>
+                        <td>{{ champs.statusInfos }}</td>
+                        <td>{% if app.user %}
+                                {% if champs.isOrganizer(app.user) %}
+                                    {% if champs.isOutDated %}
+                                        {% if champs.isOpen %}
+                                            <p><a/>Annuler</p>
+                                            <p><a href="{{ path('view', {'id': champs.id} )}}"/>Afficher</p>
+                                        {% else %}
+                                            <p><a href="{{ path('view', {'id': champs.id} )}}"/>Modifier</p>
+                                            <p><a href="{{ path('view', {'id': champs.id} )}}"/>Afficher</p>
+                                            <p><a/>Publier</p>
+                                        {% endif %}
+                                    {% endif %}
+                                {% else %}
+                                    {% if champs.isOutDated %}
+                                        {% if champs.isOpen %}
+                                            {% if  champs.participantIsPresent(app.user) %}
+                                                <p><a href="{{ path('subscription_outing', {'id': champs.id}) }}"/>Se désister</p>
+                                                <p><a href="{{ path('view', {'id': champs.id} )}}"/>Afficher</p>
+                                            {% else %}
+                                                {% if champs.isNotFull %}
+                                                    <p><a href="{{ path('subscription_outing', {'id': champs.id}) }}"/>S'inscrire</p>
+                                                    <p><a href="{{ path('view', {'id': champs.id} )}}"/>Afficher</p>
+                                                {% else %}
+                                                    <p><a href="{{ path('view', {'id': champs.id} )}}"/>Afficher</p>
+                                                {% endif %}
+                                            {% endif %}
+                                        {% endif %}
+                                    {% else %}
+                                        <p><a href="{{ path('view', {'id': champs.id} )}}"/>Afficher</p>
+                                    {% endif %}
+                                {% endif %}
+                            {% else %}
+                                {% if app.user %}
+                                <p><a href="{{ path('view', {'id': champs.id} )}}"/>Afficher</p>
+                                {% endif %}
+                            {% endif %}
+                        </td>
+                </tr>
+                        {% endif %}
+                {% endfor %}
+        </table>
+        </div>
+    {% endif %}
+{% endblock %}
+

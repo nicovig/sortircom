@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+{% form_theme form 'bootstrap_4_horizontal_layout.html.twig' %}
+{% block body %}
+
+<H1>Vos informations :</H1>
+
+<ul>
+    <li>Identifiant : {{ app.user.pseudo }}</li>
+    <li>Nom : {{ app.user.lastName }}</li>
+    <li>Prénom : {{ app.user.firstName }}</li>
+    <li>Téléphone : {{ app.user.phone }}</li>
+    <li>Adresse mail : {{ app.user.mail }}</li>
+{#    <li>Mot de passe : {{ app.user.password }}</li>#}
+</ul>
+
+    <H1>Modifier votre profil :</H1>
+    <div>
+        {{ form_start(form) }}
+        {{ form_widget(form) }}
+        <button type="submit" class="btn btn-success">Modifier profil</button>
+        {{ form_end(form) }}
+    </div>
+
+
+
+{% endblock %}

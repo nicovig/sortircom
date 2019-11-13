@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ parent() }} | Update sortie{% endblock %}
+{% block body %}
+<h1>Modifier une sortie</h1>
+    <table>
+        <tr>
+            <th>Nom de la sortie</th>
+            <th>Date de la sortie</th>
+            <th>Clôture</th>
+            <th>Durée</th>
+            <th>Inscrits/places</th>
+            <th>Infos</th>
+            <th>état</th>
+            <th>Participants</th>
+            <th>Actions</th>
+        </tr>
+        <tr>
+            <td>{{ outing.name }}</td>
+            <td>{{ outing.dateHourBeginning | date('d/m/Y H:i') }}</td>
+            <td>{{ outing.deadlineRegistration | date('d/m/Y') }}</td>
+            <td>{{ outing.duration }}</td>
+            <td>{{ outing.participants|length }} / {{ outing.nbRegistrationsMax }}</td>
+            <td>{{ outing.outingInfos }}</td>
+            <td>{{ outing.status }}</td>
+            {% for champs in participants %}
+                <td>
+                    <p>{{ champs.lastName }} {{ champs.firstName }}</p>
+                </td>
+            {% endfor %}
+        </tr>
+
+    </table>
+
+{% endblock %}
+
